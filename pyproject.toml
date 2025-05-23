@@ -1,0 +1,7 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "hexarch_project.settings"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+markers = [
+    "integration"
+]

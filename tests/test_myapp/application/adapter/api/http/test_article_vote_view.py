@@ -4,23 +4,31 @@ from uuid import UUID
 from rest_framework.response import Response
 from rest_framework.test import APIRequestFactory
 
-from myapp.application.domain.model.vote_for_article_result import(
+from myapp.application.adapter.api.http.article_vote_view import ArticleVoteView
+from myapp.application.adapter.api.vote_for_article_use_case import VoteForArticleUseCase
+from myapp.application.domain.model.identifier.article_id import ArticleId
+from myapp.application.domain.model.identifier.user_id import UserId
+from myapp.application.domain.model.vote import Vote
+from myapp.application.domain.model.vote_for_article_result import (
     AlreadyVotedResult,
     VoteForArticleResult
+)
+from myapp.application.ports.api.command.vote_for_article_command import (
+    VoteForArticleCommand
 )
 
 
 def test_user_votes_for_the_same_article_returns_conflict(
     arf: APIRequestFactory
 ):
-    ## This is *the* view we are testing
+    # This is *the* view we are testing
     article_vote_view = ArticleVoteView.as_view(
-        ## we are injecting a stub which always
-        ## returns AlreadyVotedResult (see below)
+        # we are injecting a stub which always
+        # returns AlreadyVotedResult (see below)
         vote_for_article_use_case=VoteForArticleUseCaseAlreadyVotedStub()
     )
 
-    ## A valid article vote is POSTed
+    # A valid article vote is POSTed
     response: Response = article_vote_view(
         arf.post(
             '/article_vote',
@@ -33,7 +41,7 @@ def test_user_votes_for_the_same_article_returns_conflict(
         )
     )
 
-    ## But the result is HTTP 409, as defined in the specification
+    # But the result is HTTP 409, as defined in the specification
     assert response.status_code == HTTPStatus.CONFLICT
     assert response.data == {
         'status': 409,

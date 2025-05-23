@@ -3,6 +3,7 @@ Service protocol interface for saving a voting user.
 """
 from typing import Protocol
 
+
 class SaveVotingUserPort(Protocol):
     """
     Port interface for saving a voting user.
